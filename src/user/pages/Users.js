@@ -2,17 +2,10 @@ import React from "react";
 
 import UsersList from "../components/UsersList";
 
-const Users = () => {
-  const USERS = [
-    {
-      id: "u1",
-      name: "Elric of Melnibone",
-      image: "https://i.imgur.com/CVfope0.jpeg",
-      places: 3,
-    },
-  ];
+import { MOCK_USERS as users } from "../../util/mocks";
 
-  return <UsersList items={USERS} />;
+const Users = () => {
+  return <UsersList items={users} />;
 };
 
 export default Users;

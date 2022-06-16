@@ -19,7 +19,10 @@ const SideDrawer = (props) => {
     </CSSTransition>
   );
 
-  return ReactDOM.createPortal(content, document.getElementById("modal-slot"));
+  return ReactDOM.createPortal(
+    content,
+    document.getElementById("side-drawer-slot")
+  );
 };
 
 export default SideDrawer;
