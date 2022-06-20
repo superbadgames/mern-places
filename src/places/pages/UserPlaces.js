@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import PlaceList from "../components/PlaceList";
 
-import { MOCK_PLACES as places } from "../../util/mocks";
+import { MOCK_PLACES as places } from "../../shared/util/mocks";
 
 const UserPlaces = () => {
   const userId = useParams().userId;
