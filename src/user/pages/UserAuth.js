@@ -12,6 +12,7 @@ import {
 } from "../../shared/util/validators";
 import { useForm } from "../../shared/hooks/form-hook";
 import { AuthContext } from "../../shared/context/auth-context";
+import { userSignup, userLogin } from "../../shared/api/mern-place-server";
 
 import "./Auth.css";
 
@@ -36,15 +37,7 @@ const UserAuth = (props) => {
   );
 
   const switchModeHandler = () => {
-    if (!isLoginMode) {
-      setFormData(
-        {
-          ...formState.inputs,
-          name: undefined,
-        },
-        formState.inputs.email.isValid && formState.inputs.password.isValid
-      );
-    } else {
+    if (isLoginMode) {
       setFormData(
         {
           ...formState.inputs,
@@ -55,6 +48,15 @@ const UserAuth = (props) => {
         },
         false
       );
+    } else {
+      setFormData(
+        {
+          ...formState.inputs,
+          email: undefined,
+          password: undefined,
+        },
+        formState.inputs.email.isValid && formState.inputs.password.isValid
+      );
     }
 
     setIsLoginMode((prevMode) => !prevMode);
@@ -64,33 +66,25 @@ const UserAuth = (props) => {
     event.preventDefault();
 
     if (isLoginMode) {
+      try {
+        setIsLoading(true);
+        await userLogin(formState);
+
+        auth.login();
+        setIsLoading(false);
+      } catch (error) {
+        setError(error.message || "Failed to login.");
+        setIsLoading(false);
+      }
     } else {
       try {
         setIsLoading(true);
 
-        const resp = await fetch("http://localhost:5000/api/users/signup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          }),
-        });
-
-        const data = await resp.json();
-
-        if (!resp.ok) {
-          console.log("error! Should throw", data.message);
-          throw new Error(data.message);
-        }
+        await userSignup(formState);
 
         setIsLoading(false);
         auth.login();
       } catch (error) {
-        console.log("in the catch");
         setIsLoading(false);
         setError(error.message || "Something went wrong. Please try again.");
       }
